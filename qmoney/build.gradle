@@ -43,7 +43,6 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-jul', version: '2.12.1'
     compile group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.28'
 
-
     //other libraries apart from spring
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 

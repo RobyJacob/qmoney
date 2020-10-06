@@ -1,19 +1,11 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE")
-        classpath("gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.7.1")
-    }
-}
-
 
 plugins {
     id 'java'
     id 'jacoco'
-    id "org.sonarqube" version "2.8"
     id 'maven-publish'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'com.github.spotbugs' version '4.5.0'
+
 }
 
 ext {
@@ -26,10 +18,8 @@ ext {
 
 buildDir = '/tmp/external_build'
     
-apply plugin: 'io.spring.dependency-management'
 apply plugin: "idea"
 apply plugin: "checkstyle"
-apply plugin: "com.github.spotbugs"
 
 version '1.0-SNAPSHOT'
 
@@ -50,52 +40,14 @@ task installGitHooks(type: Copy) {
     fileMode 0777
 }
 
-checkstyle {
-    toolVersion "7.8.1"
-    configFile file("${rootProject.rootDir}/__CRIO__/checkstyle.xml")
-}
-
-jacoco {
-    toolVersion = "0.8.4"
-    reportsDir = file("${rootProject.rootDir}/build/reports/jacco")
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        csv.enabled false
-        //xml.destination file("${rootProject.projectDir}/customJacocoReportDir/jacocoXml")
-        xml.destination file("${jacoco.reportsDir}/jacocoXml")
-    }
-}
-
-spotbugs {
-    toolVersion = "3.1.12"
-    sourceSets = [sourceSets.main]
-}
-
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-    reports {
-        html.enabled false
-        xml.enabled true
-    }
-}
-
 configurations {
     all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
 }
 
-test {
-    useJUnitPlatform()
-}
-
-allprojects{
-    test {
-        testLogging.events ("STANDARD_ERROR")
-        testLogging.events ("STANDARD_OUT")
-    }
+allprojects {
+    buildDir = '/tmp/external_build'
 }
 
 subprojects {
@@ -150,20 +102,22 @@ subprojects {
         ignoreFailures = true
     }
 
-    spotbugs {
-        toolVersion = "3.1.12"
-        sourceSets = [sourceSets.main]
+    spotbugsMain {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
     }
 
-    tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    spotbugsTest {
         reports {
-            html.enabled true
-            xml.enabled false
+            xml.enabled = false
+            html.enabled = true
         }
     }
 
     jacoco {
-        toolVersion = "0.7.1.201405082137"
+        toolVersion = "0.8.5"
         reportsDir = file("$buildDir/customJacocoReportDir")
     }
 
