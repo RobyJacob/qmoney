@@ -82,7 +82,6 @@ class PortfolioManagerTest {
   @Test
   public void calculateExtrapolatedAnnualizedReturn()
       throws Exception {
-    //given
     String moduleToRun = null;
 
 
@@ -110,11 +109,9 @@ class PortfolioManagerTest {
           .when(stockQuotesService).getStockQuote(eq("GOOGL"), any(), any());
     }
 
-    //when
     List<AnnualizedReturn> annualizedReturns = portfolioManager
         .calculateAnnualizedReturn(portfolioTrades, LocalDate.parse("2019-12-12"));
 
-    //then
     List<String> symbols = annualizedReturns.stream().map(AnnualizedReturn::getSymbol)
         .collect(Collectors.toList());
     Assertions.assertEquals(0.814, annualizedReturns.get(0).getAnnualizedReturn(), 0.01);
