@@ -91,11 +91,13 @@ subprojects {
     }
 
     checkstyle {
+        ignoreFailures = true
         toolVersion "7.8.1"
         configFile file("${rootProject.projectDir}/__CRIO__/checkstyle.xml")
     }
 
     pmd {
+        ignoreFailures = true
         toolVersion = "6.10.0"
         sourceSets = [sourceSets.main]
         ruleSetFiles = files("${rootProject.projectDir}/__CRIO__/ruleset.xml")
@@ -103,6 +105,7 @@ subprojects {
     }
 
     spotbugsMain {
+        ignoreFailures = true
         reports {
             xml.enabled = false
             html.enabled = true
@@ -110,6 +113,7 @@ subprojects {
     }
 
     spotbugsTest {
+        ignoreFailures = true
         reports {
             xml.enabled = false
             html.enabled = true
