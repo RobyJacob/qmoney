@@ -79,9 +79,6 @@ class PortfolioManagerTest {
   @Test
   public void calculateExtrapolatedAnnualizedReturn()
       throws Exception {
-    // TODO: CRIO_TASK_MODULE_REFACTOR
-    //  moduleToRun variable below is defaulted to NULL. Fix it in such a way that
-    //  the test doesnt throw NullPointerException.
     //given
     String moduleToRun = null;
 
@@ -122,12 +119,6 @@ class PortfolioManagerTest {
     return Arrays.asList(mapper.readValue(responseText, TiingoCandle[].class));
   }
 
-    // TODO: CRIO_TASK_MODULE_REFACTOR
-    //  moduleToRun variable below is defaulted to NULL. Fix it in such a way that
-    //  the test doesnt throw NullPointerException.
-    //given
-    //when
-    //then
 
 
 }
