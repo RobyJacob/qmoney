@@ -5,7 +5,6 @@ plugins {
     id 'maven-publish'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'com.github.spotbugs' version '4.5.0'
-
 }
 
 ext {
@@ -134,8 +133,7 @@ subprojects {
     build.dependsOn installGitHooks
 }
 
-
-
+compileJava.dependsOn clean
 
 
 task cleanupCrioJars {
