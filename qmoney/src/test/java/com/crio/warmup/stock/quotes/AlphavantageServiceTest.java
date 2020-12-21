@@ -9,10 +9,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
 
+import com.crio.warmup.stock.dto.AlphavantageDailyResponse;
 import com.crio.warmup.stock.dto.Candle;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -62,6 +66,8 @@ class AlphavantageServiceTest {
   @MockitoSettings(strictness = Strictness.LENIENT)
   void getStockQuoteSingle() throws Exception {
     Mockito.doReturn(aaplQuotes).when(restTemplate).getForObject(anyString(), eq(String.class));
+    Mockito.doReturn(getParsedResponse(aaplQuotes)).when(restTemplate).getForObject(anyString(),
+            eq(AlphavantageDailyResponse.class));
 
     List<Candle> candles = alphavantageService
         .getStockQuote("AAPL",
@@ -88,6 +94,17 @@ class AlphavantageServiceTest {
 
     assertTrue(!propertyKeyValues.isEmpty() || !propertyKeyValues2.isEmpty() || !propertyKeyValues3
         .isEmpty());
+  }
+
+
+  private AlphavantageDailyResponse getParsedResponse(String quotes) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    try {
+      return objectMapper.readValue(quotes, AlphavantageDailyResponse.class);
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 
