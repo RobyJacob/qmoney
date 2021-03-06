@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,8 +41,17 @@ public class PortfolioManagerApplication {
   //  2. You can use "./gradlew build" to check if your code builds successfully.
 
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
+    File tradeFile = resolveFileFromResources(args[0]);
+    ObjectMapper mapper = getObjectMapper();
+    List<String> symbols = new ArrayList<>();
 
-     return Collections.emptyList();
+    PortfolioTrade[] trades = mapper.readValue(tradeFile, PortfolioTrade[].class);
+
+    for (PortfolioTrade trade: trades) {
+      symbols.add(trade.getSymbol());
+    }
+
+    return symbols;
   }
 
 
@@ -111,10 +121,10 @@ public class PortfolioManagerApplication {
   public static List<String> debugOutputs() {
 
      String valueOfArgument0 = "trades.json";
-     String resultOfResolveFilePathArgs0 = "";
-     String toStringOfObjectMapper = "";
-     String functionNameFromTestFileInStackTrace = "";
-     String lineNumberFromTestFileInStackTrace = "";
+     String resultOfResolveFilePathArgs0 = "/home/roby/crio-proj/qmoney/qmoney/bin/main/trades.json";
+     String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@797b0699";
+     String functionNameFromTestFileInStackTrace = "PortfolioManagerApplication.main(String[])";
+     String lineNumberFromTestFileInStackTrace = "135:1";
 
 
     return Arrays.asList(new String[]{valueOfArgument0, resultOfResolveFilePathArgs0,
