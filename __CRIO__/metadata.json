@@ -1,4 +1,8 @@
 {
+<<<<<<< HEAD
   "module_id": "ME_QMONEY_MODULE_JSON_PARSING",
+=======
+  "module_id": "ME_QMONEY_MODULE_REST_API",
+>>>>>>> 057619fcd3d08d4c73d5eff9531f8dca5d513953
   "me_id": "ME_QMONEY"
 }
