@@ -3,7 +3,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'maven-publish'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'com.github.spotbugs' version '4.5.0'
 }
 
