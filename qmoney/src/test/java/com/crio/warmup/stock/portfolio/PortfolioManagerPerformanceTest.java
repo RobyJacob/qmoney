@@ -84,6 +84,17 @@ class PortfolioManagerPerformanceTest {
   }
 
 
+  @Test
+  public void calculateExtrapolatedAnnualizedReturnWithException()
+      throws JsonProcessingException, StockQuoteServiceException, InterruptedException {
+    try {
+      runConcurrencyTest(true);
+    } catch (Throwable th) {
+      if (!(th instanceof StockQuoteServiceException)) {
+        fail("Method throwed runtime exception");
+      }
+    }
+  }
 
   private void runConcurrencyTest(boolean withException)
       throws JsonProcessingException, StockQuoteServiceException, InterruptedException {
