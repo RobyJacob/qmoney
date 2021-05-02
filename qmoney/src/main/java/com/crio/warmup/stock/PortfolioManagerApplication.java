@@ -204,9 +204,9 @@ public class PortfolioManagerApplication {
 
     String valueOfArgument0 = "trades.json";
     String resultOfResolveFilePathArgs0 = "/Users/robyjacob/crio-projects/robyjacob1998-ME_QMONEY/qmoney/bin/main/trades.json";
-    String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@797b0699";
-    String functionNameFromTestFileInStackTrace = "PortfolioManagerApplication.main(String[])";
-    String lineNumberFromTestFileInStackTrace = "135:1";
+    String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@5b068087";
+    String functionNameFromTestFileInStackTrace = "PortfolioManagerApplication.mainReadFile(String[])";
+    String lineNumberFromTestFileInStackTrace = "280:1";
 
     return Arrays.asList(new String[] { valueOfArgument0, resultOfResolveFilePathArgs0, toStringOfObjectMapper,
         functionNameFromTestFileInStackTrace, lineNumberFromTestFileInStackTrace });
