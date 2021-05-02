@@ -240,12 +240,10 @@ public class PortfolioManagerApplication {
       annualizedReturns.add(annualizedReturn);
     }
 
-    Collections.sort(annualizedReturns, new Comparator<AnnualizedReturn>() {
-      @Override
-      public int compare(AnnualizedReturn o1, AnnualizedReturn o2) {
-        return -o1.getAnnualizedReturn().compareTo(o2.getAnnualizedReturn());
-      }
-    });
+    Comparator<AnnualizedReturn> annualizedReturnComparator = Comparator
+        .comparing(AnnualizedReturn::getAnnualizedReturn);
+
+    Collections.sort(annualizedReturns, annualizedReturnComparator.reversed());
 
     return annualizedReturns;
   }
