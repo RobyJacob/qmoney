@@ -69,7 +69,6 @@ public class PortfolioManagerApplication {
   private static PortfolioTrade[] getTrades(String fileName) throws IOException, URISyntaxException {
     File tradeFile = resolveFileFromResources(fileName);
     ObjectMapper mapper = getObjectMapper();
-    List<String> symbols = new ArrayList<>();
 
     PortfolioTrade[] trades = mapper.readValue(tradeFile, PortfolioTrade[].class);
 
@@ -292,8 +291,10 @@ public class PortfolioManagerApplication {
   public static List<AnnualizedReturn> mainCalculateReturnsAfterRefactor(String[] args) throws Exception {
     String file = args[0];
     LocalDate endDate = LocalDate.parse(args[1]);
-    String contents = readFileAsString(file);
-    ObjectMapper objectMapper = getObjectMapper();
+    PortfolioTrade[] portfolioTrades = getTrades(file);
+    // ObjectMapper objectMapper = getObjectMapper();
+    PortfolioManager portfolioManager = PortfolioManagerFactory.getPortfolioManager(restTemplate);
+
     return portfolioManager.calculateAnnualizedReturn(Arrays.asList(portfolioTrades), endDate);
   }
 
