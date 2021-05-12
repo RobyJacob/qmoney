@@ -29,7 +29,6 @@ This class is supposed to be used by assessments only.
  */
 @ExtendWith(MockitoExtension.class)
 class PortfolioManagerTest {
-
     @Mock
     private RestTemplate restTemplate;
 
