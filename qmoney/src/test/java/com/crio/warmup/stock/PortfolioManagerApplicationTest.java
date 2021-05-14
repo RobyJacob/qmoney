@@ -86,4 +86,4 @@ class PortfolioManagerApplicationTest {
     Assertions.assertTrue(responses.get(0).contains("trades.json"));
   }
 
-}
+}  
