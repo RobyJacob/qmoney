@@ -6,10 +6,15 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
+import com.crio.warmup.stock.dto.TiingoCandle;
 import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -57,5 +62,34 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   private Comparator<AnnualizedReturn> getComparator() {
     return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
+  }
+
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException {
+    if (to.isBefore(from))
+      throw new RuntimeException();
+
+    String apiUrl = this.buildUri(symbol, from, to);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+
+    String response = restTemplate.getForObject(apiUrl, String.class);
+
+    Candle[] quotes = objectMapper.readValue(response, TiingoCandle[].class);
+
+    List<Candle> candles = Arrays.asList(quotes);
+
+    Comparator<Candle> comparator = Comparator.comparing(Candle::getDate);
+
+    Collections.sort(candles, comparator);
+
+    return candles;
+  }
+
+  public String buildUri(String symbol, LocalDate startDate, LocalDate endDate) {
+    String uriTemplate = String.format("https://api.tiingo.com/tiingo/daily/%s/prices?startDate=%s&endDate=%s&token=%s",
+        symbol, startDate.toString(), endDate.toString(), "4dd7b0eb5e86af400d5c10e372ab0a2e49ec7bfb");
+
+    return uriTemplate;
   }
 }
