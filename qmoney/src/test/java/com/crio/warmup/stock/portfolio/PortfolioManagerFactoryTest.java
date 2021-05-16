@@ -16,17 +16,13 @@ class PortfolioManagerFactoryTest {
 
   @Test
   void getPortfolioManager() {
-    Assertions.assertTrue(PortfolioManagerFactory.getPortfolioManager(restTemplate)
-        instanceof PortfolioManagerImpl);
+    Assertions.assertTrue(PortfolioManagerFactory.getPortfolioManager(restTemplate) instanceof PortfolioManagerImpl);
   }
 
-<<<<<<< HEAD
-=======
   @Test
   void getPortfolioManagerWithStockQuoteService() {
-    Assertions.assertTrue(PortfolioManagerFactory.getPortfolioManager("tiingo", restTemplate)
-        instanceof PortfolioManagerImpl);
+    Assertions.assertTrue(
+        PortfolioManagerFactory.getPortfolioManager("tiingo", restTemplate) instanceof PortfolioManagerImpl);
   }
->>>>>>> 90c1104ce55dc0544ac08891a61eeec392bf990a
 
 }
