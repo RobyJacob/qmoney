@@ -92,7 +92,7 @@ class PortfolioManagerTest {
         List<PortfolioTrade> portfolioTrades = Arrays.asList(new PortfolioTrade[] { trade1, trade2, trade3 });
 
         if (moduleToRun.equals("ADDITIONAL_REFACTOR")) {
-            portfolioManager = new PortfolioManagerImpl(stockQuotesService, restTemplate);
+            portfolioManager = new PortfolioManagerImpl(stockQuotesService);
             Mockito.doReturn(getCandles(aaplQuotes)).when(stockQuotesService).getStockQuote(eq("AAPL"), any(), any());
             Mockito.doReturn(getCandles(msftQuotes)).when(stockQuotesService).getStockQuote(eq("MSFT"), any(), any());
             Mockito.doReturn(getCandles(googlQuotes)).when(stockQuotesService).getStockQuote(eq("GOOGL"), any(), any());

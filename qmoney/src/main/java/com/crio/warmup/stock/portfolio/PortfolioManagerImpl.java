@@ -29,6 +29,10 @@ public class PortfolioManagerImpl implements PortfolioManager {
     this.stockService = stockService;
   }
 
+  protected PortfolioManagerImpl(StockQuotesService stockService) {
+    this(stockService, new RestTemplate());
+  }
+
   protected PortfolioManagerImpl(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
