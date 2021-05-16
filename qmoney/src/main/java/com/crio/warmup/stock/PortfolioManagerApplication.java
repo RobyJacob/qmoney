@@ -5,6 +5,7 @@ import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.log.UncaughtExceptionHandler;
 import com.crio.warmup.stock.quotes.StockQuoteServiceFactory;
 import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.crio.warmup.stock.portfolio.PortfolioManager;
@@ -24,7 +25,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
+
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.web.client.RestTemplate;
 
 public class PortfolioManagerApplication {
@@ -177,24 +181,10 @@ public class PortfolioManagerApplication {
     return new AnnualizedReturn(symbol, annualizedReturns, totalReturns);
   }
 
-  // TODO: CRIO_TASK_MODULE_REFACTOR
-  // Once you are done with the implementation inside PortfolioManagerImpl and
-  // PortfolioManagerFactory, create PortfolioManager using
-  // PortfolioManagerFactory.
-  // Refer to the code from previous modules to get the List<PortfolioTrades> and
-  // endDate, and
-  // call the newly implemented method in PortfolioManager to calculate the
-  // annualized returns.
-
-  // Note:
-  // Remember to confirm that you are getting same results for annualized returns
-  // as in Module 3.
-
   public static List<AnnualizedReturn> mainCalculateReturnsAfterRefactor(String[] args) throws Exception {
     String file = args[0];
     LocalDate endDate = LocalDate.parse(args[1]);
     PortfolioTrade[] portfolioTrades = getTrades(file);
-    // ObjectMapper objectMapper = getObjectMapper();
     PortfolioManager portfolioManager = PortfolioManagerFactory.getPortfolioManager(restTemplate);
 
     return portfolioManager.calculateAnnualizedReturn(Arrays.asList(portfolioTrades), endDate);
@@ -207,7 +197,3 @@ public class PortfolioManagerApplication {
     printJsonObject(mainCalculateReturnsAfterRefactor(args));
   }
 }
-
-   
-
- 
