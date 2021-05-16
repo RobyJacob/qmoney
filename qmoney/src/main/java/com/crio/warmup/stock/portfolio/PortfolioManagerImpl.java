@@ -24,13 +24,13 @@ public class PortfolioManagerImpl implements PortfolioManager {
   private RestTemplate restTemplate;
   private StockQuotesService stockService;
 
-  protected PortfolioManagerImpl(RestTemplate restTemplate) {
-    this.restTemplate = restTemplate;
-  }
-
   protected PortfolioManagerImpl(StockQuotesService stockService, RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
     this.stockService = stockService;
+  }
+
+  protected PortfolioManagerImpl(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
   }
 
   public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades, LocalDate endDate) {
