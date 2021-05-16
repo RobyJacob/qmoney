@@ -4,6 +4,9 @@ package com.crio.warmup.stock.quotes;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.TiingoCandle;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,13 +31,16 @@ public class TiingoService implements StockQuotesService {
 
     String apiUrl = this.buildUri(symbol, from, to);
 
-    System.out.println(apiUrl);
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
 
-    Candle[] quotes = this.restTemplate.getForObject(apiUrl, TiingoCandle[].class);
+    String response = restTemplate.getForObject(apiUrl, String.class);
+
+    Candle[] quotes = objectMapper.readValue(response, TiingoCandle[].class);
 
     List<Candle> candles = Arrays.asList(quotes);
 
-    Collections.sort(candles, this.getComparator());
+    Collections.sort(candles, getComparator());
 
     return candles;
   }
