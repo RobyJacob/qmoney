@@ -57,4 +57,19 @@ public class TiingoService implements StockQuotesService {
     return uriTemplate;
   }
 
+  // TODO: CRIO_TASK_MODULE_EXCEPTIONS
+  // 1. Update the method signature to match the signature change in the
+  // interface.
+  // Start throwing new StockQuoteServiceException when you get some invalid
+  // response from
+  // Tiingo, or if Tiingo returns empty results for whatever reason, or you
+  // encounter
+  // a runtime exception during Json parsing.
+  // 2. Make sure that the exception propagates all the way from
+  // PortfolioManager#calculateAnnualisedReturns so that the external user's of
+  // our API
+  // are able to explicitly handle this exception upfront.
+
+  // CHECKSTYLE:OFF
+
 }
