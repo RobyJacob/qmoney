@@ -10,25 +10,27 @@ class StockQuoteServiceFactoryTest {
 
   @Test
   void getServiceTiingo() {
-    assertTrue(StockQuoteServiceFactory.INSTANCE.getService("tiingo", new RestTemplate())
-        instanceof TiingoService);
+    assertTrue(StockQuoteServiceFactory.INSTANCE.getService("tiingo", new RestTemplate()) instanceof TiingoService);
   }
 
   @Test
   void getServiceTiingoUpperCase() {
-    assertTrue(StockQuoteServiceFactory.INSTANCE.getService("Tiingo", new RestTemplate())
-        instanceof TiingoService);
+    assertTrue(StockQuoteServiceFactory.INSTANCE.getService("Tiingo", new RestTemplate()) instanceof TiingoService);
   }
 
   @Test
   void getServiceAlphavantage() {
-    assertTrue(StockQuoteServiceFactory.INSTANCE.getService("alphavantage", new RestTemplate())
-        instanceof AlphavantageService);
+    assertTrue(StockQuoteServiceFactory.INSTANCE.getService("alphavantage",
+        new RestTemplate()) instanceof AlphavantageService);
   }
 
   @Test
   void getServiceDefault() {
-    assertTrue(StockQuoteServiceFactory.INSTANCE.getService("", new RestTemplate())
-        instanceof AlphavantageService);
+    assertTrue(StockQuoteServiceFactory.INSTANCE.getService("", new RestTemplate()) instanceof AlphavantageService);
+  }
+
+  @Test
+  void getServiceNull() {
+    assertTrue(StockQuoteServiceFactory.INSTANCE.getService(null, new RestTemplate()) instanceof AlphavantageService);
   }
 }
