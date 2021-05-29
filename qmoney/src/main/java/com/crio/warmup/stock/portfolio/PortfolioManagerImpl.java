@@ -52,6 +52,8 @@ public class PortfolioManagerImpl implements PortfolioManager {
         quotes = this.stockService.getStockQuote(symbol, startDate, endDate);
       } catch (StockQuoteServiceException e) {
         throw e;
+      } catch (JsonProcessingException e) {
+        e.printStackTrace();
       }
       double buyPrice = quotes.get(0).getOpen();
       double sellPrice = quotes.get(quotes.size() - 1).getClose();

@@ -13,7 +13,8 @@ public interface StockQuotesService {
   // Change the method signature to throw StockQuoteServiceException
 
   // CHECKSTYLE:OFF
-  List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws StockQuoteServiceException;
+  List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
+      throws StockQuoteServiceException, JsonProcessingException;
 
   String buildUri(String symbol, LocalDate startDate, LocalDate endDate);
   // CHECKSTYLE:ON

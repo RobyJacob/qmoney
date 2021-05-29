@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.springframework.cglib.core.Local;
 import org.springframework.web.client.RestTemplate;
 
 public class PortfolioManagerApplication {
@@ -197,6 +198,10 @@ public class PortfolioManagerApplication {
 
     // printJsonObject(mainCalculateReturnsAfterRefactor(args));
     StockQuotesService service = StockQuoteServiceFactory.INSTANCE.getService(null, restTemplate);
-    System.out.println(service.getStockQuote("AAPL", LocalDate.parse("2019-01-01"), LocalDate.parse("2019-01-04")));
+    List<Candle> stockQuotes = service.getStockQuote("AAPL", LocalDate.parse("2019-01-01"),
+        LocalDate.parse("2019-01-04"));
+    for (Candle candle : stockQuotes) {
+      System.out.println(candle);
+    }
   }
 }

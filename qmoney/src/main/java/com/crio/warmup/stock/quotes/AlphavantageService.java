@@ -27,7 +27,8 @@ public class AlphavantageService implements StockQuotesService {
   }
 
   @Override
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws StockQuoteServiceException {
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
+      throws StockQuoteServiceException, JsonProcessingException, RuntimeException {
     String url = buildUri(symbol, from, to);
     List<Candle> candles = new ArrayList<>();
     AlphavantageDailyResponse alphavantageDailyResponse = null;
@@ -42,20 +43,19 @@ public class AlphavantageService implements StockQuotesService {
     try {
       response = this.restTemplate.getForObject(url, String.class);
       alphavantageDailyResponse = objectMapper.readValue(response, AlphavantageDailyResponse.class);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      throw new StockQuoteServiceException(e.getMessage(), e.getCause());
-    }
 
-    Map<LocalDate, AlphavantageCandle> responseCandles = alphavantageDailyResponse.getCandles();
+      Map<LocalDate, AlphavantageCandle> responseCandles = alphavantageDailyResponse.getCandles();
 
-    for (Map.Entry<LocalDate, AlphavantageCandle> entry : responseCandles.entrySet()) {
-      LocalDate keyDate = entry.getKey();
-      if ((keyDate.isEqual(from) || keyDate.isEqual(to)) || (keyDate.isAfter(from) && keyDate.isBefore(to))) {
-        AlphavantageCandle candle = entry.getValue();
-        candle.setDate(keyDate);
-        candles.add(candle);
+      for (Map.Entry<LocalDate, AlphavantageCandle> entry : responseCandles.entrySet()) {
+        LocalDate keyDate = entry.getKey();
+        if ((keyDate.isEqual(from) || keyDate.isEqual(to)) || (keyDate.isAfter(from) && keyDate.isBefore(to))) {
+          AlphavantageCandle candle = entry.getValue();
+          candle.setDate(keyDate);
+          candles.add(candle);
+        }
       }
+    } catch (NullPointerException e) {
+      throw new StockQuoteServiceException("Alphavantage returned invalid response", e.getCause());
     }
 
     Collections.sort(candles, this.getComparator());

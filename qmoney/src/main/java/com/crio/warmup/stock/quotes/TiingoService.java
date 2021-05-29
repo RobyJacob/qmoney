@@ -27,7 +27,8 @@ public class TiingoService implements StockQuotesService {
   }
 
   @Override
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws StockQuoteServiceException {
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
+      throws StockQuoteServiceException, JsonProcessingException, RuntimeException {
     if (to.isBefore(from))
       throw new RuntimeException();
 
@@ -42,8 +43,8 @@ public class TiingoService implements StockQuotesService {
     try {
       response = this.restTemplate.getForObject(apiUrl, String.class);
       quotes = objectMapper.readValue(response, TiingoCandle[].class);
-    } catch (Exception e) {
-      throw new StockQuoteServiceException(e.getMessage(), e.getCause());
+    } catch (NullPointerException e) {
+      throw new StockQuoteServiceException("Error occured while requesting Tiingo API", e.getCause());
     }
 
     List<Candle> candles = Arrays.asList(quotes);
