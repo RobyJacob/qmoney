@@ -6,6 +6,7 @@ import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.dto.TiingoCandle;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
+import com.crio.warmup.stock.quotes.AlphavantageService;
 import com.crio.warmup.stock.quotes.StockQuoteServiceFactory;
 import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.crio.warmup.stock.portfolio.PortfolioManager;
@@ -191,9 +192,11 @@ public class PortfolioManagerApplication {
   }
 
   public static void main(String[] args) throws Exception {
-    Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
-    ThreadContext.put("runId", UUID.randomUUID().toString());
+    // Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
+    // ThreadContext.put("runId", UUID.randomUUID().toString());
 
-    printJsonObject(mainCalculateReturnsAfterRefactor(args));
+    // printJsonObject(mainCalculateReturnsAfterRefactor(args));
+    StockQuotesService service = StockQuoteServiceFactory.INSTANCE.getService(null, restTemplate);
+    System.out.println(service.getStockQuote("AAPL", LocalDate.parse("2019-01-01"), LocalDate.parse("2019-01-04")));
   }
 }

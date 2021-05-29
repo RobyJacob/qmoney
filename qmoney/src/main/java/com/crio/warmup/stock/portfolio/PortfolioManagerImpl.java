@@ -2,7 +2,6 @@
 package com.crio.warmup.stock.portfolio;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.SECONDS;
 
 import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
@@ -39,7 +38,9 @@ public class PortfolioManagerImpl implements PortfolioManager {
     this.restTemplate = restTemplate;
   }
 
-  public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades, LocalDate endDate) {
+  @Override
+  public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades, LocalDate endDate)
+      throws StockQuoteServiceException {
     List<AnnualizedReturn> annualizedReturns = new ArrayList<>();
     List<Candle> quotes = new ArrayList<>();
 
@@ -49,8 +50,8 @@ public class PortfolioManagerImpl implements PortfolioManager {
       double totalNumOfYears = (double) startDate.until(endDate, DAYS) / 365.24;
       try {
         quotes = this.stockService.getStockQuote(symbol, startDate, endDate);
-      } catch (JsonProcessingException ex) {
-        System.out.println("Exception while processing Json");
+      } catch (StockQuoteServiceException e) {
+        throw e;
       }
       double buyPrice = quotes.get(0).getOpen();
       double sellPrice = quotes.get(quotes.size() - 1).getClose();
