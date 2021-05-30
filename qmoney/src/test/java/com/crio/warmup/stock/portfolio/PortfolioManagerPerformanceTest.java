@@ -26,7 +26,6 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 /*
 This class is supposed to be used by assessments only.
  */
@@ -42,10 +41,8 @@ class PortfolioManagerPerformanceTest {
 
   private String googlQuotes = "[{\"date\":\"2019-01-02T00:00:00.000Z\",\"close\":1054.68,"
       + "\"high\":1060.79,\"low\":1025.28,\"open\":1027.2,\"volume\":1593395,\"adjClose\":1054.68,"
-      + "\"adjHigh\":1060.79,\"adjLow\":1025.28,\"adjOpen\""
-      + ":1027.2,\"adjVolume\":1593395,\"divCash\""
-      + ":0.0,\"splitFactor\":1.0},{\"date\":\""
-      + "2019-01-03T00:00:00.000Z\",\"close\":1025.47,\"high\""
+      + "\"adjHigh\":1060.79,\"adjLow\":1025.28,\"adjOpen\"" + ":1027.2,\"adjVolume\":1593395,\"divCash\""
+      + ":0.0,\"splitFactor\":1.0},{\"date\":\"" + "2019-01-03T00:00:00.000Z\",\"close\":1025.47,\"high\""
       + ":1066.26,\"low\":1022.37,\"open\":1050.67,\"volume\":2097957,\"adjClose\":1025.47,"
       + "\"adjHigh\":1066.26,\"adjLow\":1022.37,\"adjOpen\":1050.67,\"adjVolume\":2097957,"
       + "\"divCash\":0.0,\"splitFactor\":1.0},{\"date\":\"2019-12-12T00:00:00.000Z\","
@@ -83,7 +80,6 @@ class PortfolioManagerPerformanceTest {
     runConcurrencyTest(false);
   }
 
-
   @Test
   public void calculateExtrapolatedAnnualizedReturnWithException()
       throws JsonProcessingException, StockQuoteServiceException, InterruptedException {
@@ -98,59 +94,50 @@ class PortfolioManagerPerformanceTest {
 
   private void runConcurrencyTest(boolean withException)
       throws JsonProcessingException, StockQuoteServiceException, InterruptedException {
-    String moduleToRun = null;
-
+    String moduleToRun = "ADDITIONAL_REFACTOR";
 
     if (moduleToRun.equals("REFACTOR")) {
-      Mockito.doReturn(getCandles(aaplQuotes, false)).when(portfolioManager)
-          .getStockQuote(eq("AAPL"), any(), any());
-      Mockito.doReturn(getCandles(msftQuotes, false)).when(portfolioManager)
-          .getStockQuote(eq("MSFT"), any(), any());
-      Mockito.doReturn(getCandles(googlQuotes, false)).when(portfolioManager)
-          .getStockQuote(eq("GOOGL"), any(), any());
+      Mockito.doReturn(getCandles(aaplQuotes, false)).when(portfolioManager).getStockQuote(eq("AAPL"), any(), any());
+      Mockito.doReturn(getCandles(msftQuotes, false)).when(portfolioManager).getStockQuote(eq("MSFT"), any(), any());
+      Mockito.doReturn(getCandles(googlQuotes, false)).when(portfolioManager).getStockQuote(eq("GOOGL"), any(), any());
     }
 
     if (moduleToRun.equals("ADDITIONAL_REFACTOR")) {
       this.portfolioManager = getPortfolioManager(withException);
     }
-    //given
+    // given
     PortfolioTrade trade1 = new PortfolioTrade("AAPL", 50, LocalDate.parse("2019-01-02"));
     PortfolioTrade trade2 = new PortfolioTrade("GOOGL", 100, LocalDate.parse("2019-01-02"));
     PortfolioTrade trade3 = new PortfolioTrade("MSFT", 20, LocalDate.parse("2019-01-02"));
-    List<PortfolioTrade> portfolioTrades = Arrays
-        .asList(new PortfolioTrade[]{trade1, trade2, trade3});
+    List<PortfolioTrade> portfolioTrades = Arrays.asList(new PortfolioTrade[] { trade1, trade2, trade3 });
     long startTime = System.currentTimeMillis();
 
-    //when
-    List<AnnualizedReturn> annualizedReturns = portfolioManager
-        .calculateAnnualizedReturnParallel(portfolioTrades, LocalDate.parse("2019-12-12"), 5);
+    // when
+    List<AnnualizedReturn> annualizedReturns = portfolioManager.calculateAnnualizedReturnParallel(portfolioTrades,
+        LocalDate.parse("2019-12-12"), 5);
 
-    //then
-    List<String> symbols = annualizedReturns.stream().map(AnnualizedReturn::getSymbol)
-        .collect(Collectors.toList());
+    // then
+    List<String> symbols = annualizedReturns.stream().map(AnnualizedReturn::getSymbol).collect(Collectors.toList());
     Assertions.assertEquals(0.81, annualizedReturns.get(0).getAnnualizedReturn(), 0.01);
     Assertions.assertEquals(0.58, annualizedReturns.get(1).getAnnualizedReturn(), 0.01);
     Assertions.assertEquals(0.33, annualizedReturns.get(2).getAnnualizedReturn(), 0.01);
-    Assertions.assertEquals(Arrays.asList(new String[]{"AAPL", "MSFT", "GOOGL"}), symbols);
+    Assertions.assertEquals(Arrays.asList(new String[] { "AAPL", "MSFT", "GOOGL" }), symbols);
 
-    Assertions.assertTrue(System.currentTimeMillis() - startTime < 6000,
-        "The task did not finish in time");
+    Assertions.assertTrue(System.currentTimeMillis() - startTime < 6000, "The task did not finish in time");
   }
 
   private PortfolioManagerImpl getPortfolioManager(boolean withException)
       throws JsonProcessingException, StockQuoteServiceException {
-    Mockito.doAnswer(invocation -> getCandles(aaplQuotes, false))
-        .when(stockQuotesService).getStockQuote(eq("AAPL"), any(), any());
-    Mockito.doAnswer(invocation -> getCandles(msftQuotes, withException))
-        .when(stockQuotesService).getStockQuote(eq("MSFT"), any(), any());
-    Mockito.doAnswer(invocation -> getCandles(googlQuotes, withException))
-        .when(stockQuotesService).getStockQuote(eq("GOOGL"), any(), any());
+    Mockito.doAnswer(invocation -> getCandles(aaplQuotes, false)).when(stockQuotesService).getStockQuote(eq("AAPL"),
+        any(), any());
+    Mockito.doAnswer(invocation -> getCandles(msftQuotes, withException)).when(stockQuotesService)
+        .getStockQuote(eq("MSFT"), any(), any());
+    Mockito.doAnswer(invocation -> getCandles(googlQuotes, withException)).when(stockQuotesService)
+        .getStockQuote(eq("GOOGL"), any(), any());
     return new PortfolioManagerImpl(stockQuotesService);
   }
 
-
-  private List<TiingoCandle> getCandles(String responseText, boolean throwException)
-      throws JsonProcessingException {
+  private List<TiingoCandle> getCandles(String responseText, boolean throwException) throws JsonProcessingException {
     try {
       Thread.sleep(5000);
     } catch (InterruptedException e) {
@@ -165,4 +152,3 @@ class PortfolioManagerPerformanceTest {
   }
 
 }
-

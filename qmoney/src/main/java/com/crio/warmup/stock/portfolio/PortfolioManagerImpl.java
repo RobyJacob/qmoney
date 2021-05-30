@@ -19,11 +19,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.cglib.core.Local;
 import org.springframework.web.client.RestTemplate;
 
 public class PortfolioManagerImpl implements PortfolioManager {
   private RestTemplate restTemplate;
   private StockQuotesService stockService;
+  private ExecutorService threadPool = null;
 
   protected PortfolioManagerImpl(StockQuotesService stockService, RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
@@ -65,6 +74,67 @@ public class PortfolioManagerImpl implements PortfolioManager {
     }
 
     Collections.sort(annualizedReturns, this.getComparator());
+
+    return annualizedReturns;
+  }
+
+  @Override
+  public List<AnnualizedReturn> calculateAnnualizedReturnParallel(List<PortfolioTrade> portfolioTrades,
+      LocalDate endDate, int numThreads) throws InterruptedException, StockQuoteServiceException {
+    List<AnnualizedReturn> annualizedReturns = new ArrayList<>();
+    List<Callable<List<Object>>> callableTasks = new ArrayList<>();
+
+    if (threadPool == null)
+      threadPool = Executors.newFixedThreadPool(numThreads);
+
+    for (PortfolioTrade trade : portfolioTrades) {
+      String symbol = trade.getSymbol();
+      LocalDate startDate = trade.getPurchaseDate();
+
+      callableTasks.add(() -> {
+        List<Candle> quotes = stockService.getStockQuote(symbol, startDate, endDate);
+
+        return Arrays.asList(quotes, symbol, startDate);
+      });
+    }
+
+    List<Future<List<Object>>> futureTasks = threadPool.invokeAll(callableTasks);
+
+    for (Future<List<Object>> task : futureTasks) {
+      LocalDate startDate = LocalDate.now();
+      String symbol = "";
+      List<Candle> quotes = new ArrayList<>();
+
+      try {
+        quotes = (List<Candle>) task.get().get(0);
+        symbol = (String) task.get().get(1);
+        startDate = (LocalDate) task.get().get(2);
+      } catch (ExecutionException e) {
+        throw new StockQuoteServiceException(e.getMessage());
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+
+      double totalNumOfYears = (double) startDate.until(endDate, DAYS) / 365.24;
+      double buyPrice = quotes.get(0).getOpen();
+      double sellPrice = quotes.get(quotes.size() - 1).getClose();
+
+      Double totalReturns = (sellPrice - buyPrice) / buyPrice;
+      Double annualizedReturn = Math.pow((1 + totalReturns), (1 / totalNumOfYears)) - 1;
+
+      annualizedReturns.add(new AnnualizedReturn(symbol, annualizedReturn, totalReturns));
+    }
+
+    Collections.sort(annualizedReturns, this.getComparator());
+
+    threadPool.shutdown();
+    try {
+      if (!threadPool.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+        threadPool.shutdownNow();
+      }
+    } catch (InterruptedException e) {
+      threadPool.shutdownNow();
+    }
 
     return annualizedReturns;
   }

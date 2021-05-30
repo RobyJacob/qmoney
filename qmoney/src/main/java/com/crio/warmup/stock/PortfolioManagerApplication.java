@@ -11,6 +11,7 @@ import com.crio.warmup.stock.quotes.StockQuoteServiceFactory;
 import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.crio.warmup.stock.portfolio.PortfolioManager;
 import com.crio.warmup.stock.portfolio.PortfolioManagerFactory;
+import com.crio.warmup.stock.portfolio.PortfolioManagerImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
@@ -197,11 +198,14 @@ public class PortfolioManagerApplication {
     // ThreadContext.put("runId", UUID.randomUUID().toString());
 
     // printJsonObject(mainCalculateReturnsAfterRefactor(args));
-    StockQuotesService service = StockQuoteServiceFactory.INSTANCE.getService(null, restTemplate);
-    List<Candle> stockQuotes = service.getStockQuote("AAPL", LocalDate.parse("2019-01-01"),
-        LocalDate.parse("2019-01-04"));
-    for (Candle candle : stockQuotes) {
-      System.out.println(candle);
-    }
+    PortfolioManager portfolioManager = PortfolioManagerFactory.getPortfolioManager(null, restTemplate);
+
+    PortfolioTrade trade1 = new PortfolioTrade("AAPL", 50, LocalDate.parse("2019-01-02"));
+    PortfolioTrade trade2 = new PortfolioTrade("GOOGL", 100, LocalDate.parse("2019-01-02"));
+    PortfolioTrade trade3 = new PortfolioTrade("MSFT", 20, LocalDate.parse("2019-01-02"));
+    List<PortfolioTrade> portfolioTrades = Arrays.asList(new PortfolioTrade[] { trade1, trade2, trade3 });
+
+    List<AnnualizedReturn> annualizedReturns = portfolioManager.calculateAnnualizedReturnParallel(portfolioTrades,
+        LocalDate.parse("2019-12-12"), 5);
   }
 }
